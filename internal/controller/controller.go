@@ -1,13 +1,17 @@
 package controller
 
 import (
+	"net/http"
+
 	usercontroller "github.com/begenov/TaskFlow/internal/controller/user-controller"
 	"github.com/begenov/TaskFlow/internal/service"
 )
 
 type userProvider interface{}
 
-type Controller interface{}
+type Controller interface {
+	Router() http.Handler
+}
 
 type controller struct {
 	user userProvider
