@@ -3,22 +3,20 @@ package storage
 import (
 	"database/sql"
 
-	"github.com/begenov/TaskFlow/internal/pkg/lib/e"
-	"github.com/begenov/TaskFlow/internal/storage/mysql"
+	usermysql "github.com/begenov/TaskFlow/internal/storage/user-mysql"
+	"github.com/begenov/TaskFlow/models"
 )
 
-type Storage struct {
-	*mysql.MySql
+type User interface {
+	CreateUser(user models.User) error
 }
 
-func NewStorage() (*Storage, error) {
-	db, err := sql.Open("", "")
-	if err != nil {
-		return nil, e.Wrap("", err)
-	}
-	if err := db.Ping(); err != nil {
-		return nil, e.Wrap("", err)
-	}
+type Storage struct {
+	User User
+}
 
-	return &Storage{mysql.NewMySql(db)}, nil
+func NewStorage(db *sql.DB) *Storage {
+	return &Storage{
+		User: usermysql.NewUserStorage(db),
+	}
 }
