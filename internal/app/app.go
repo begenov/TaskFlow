@@ -2,7 +2,6 @@ package app
 
 import (
 	"flag"
-	"net/http"
 
 	"github.com/begenov/TaskFlow/internal/controller"
 	"github.com/begenov/TaskFlow/internal/service"
@@ -27,5 +26,5 @@ func Run() error {
 	service := service.NewService(*storage)
 	controller := controller.NewController(*service)
 
-	return http.ListenAndServe(":8080", controller.Router())
+	return controller.Router().Run(":8080")
 }

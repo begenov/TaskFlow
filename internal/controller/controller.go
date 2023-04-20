@@ -1,16 +1,18 @@
 package controller
 
 import (
-	"net/http"
-
 	usercontroller "github.com/begenov/TaskFlow/internal/controller/user-controller"
 	"github.com/begenov/TaskFlow/internal/service"
+	"github.com/gin-gonic/gin"
 )
 
-type userProvider interface{}
+type userProvider interface {
+	SignUp(ctx *gin.Context)
+	SignUpForm(ctx *gin.Context)
+}
 
 type Controller interface {
-	Router() http.Handler
+	Router() *gin.Engine
 }
 
 type controller struct {

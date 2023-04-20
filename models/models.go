@@ -1,6 +1,10 @@
 package models
 
-import "github.com/golang-jwt/jwt"
+import (
+	"time"
+
+	"github.com/golang-jwt/jwt"
+)
 
 type Todo struct {
 	ID          int    `json:"id"`
@@ -9,9 +13,11 @@ type Todo struct {
 }
 
 type User struct {
-	ID       int    `json:"id"`
-	Username string `json:"username"`
-	Password string `json:"password"`
+	ID        int       `json:"id"`
+	Username  string    `json:"username"`
+	Email     string    `json:"email"`
+	CreatedAt time.Time `json:"created_at"`
+	Password  string    `json:"password"`
 }
 
 type Claims struct {

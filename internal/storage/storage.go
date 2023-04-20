@@ -1,6 +1,7 @@
 package storage
 
 import (
+	"context"
 	"database/sql"
 
 	usermysql "github.com/begenov/TaskFlow/internal/storage/user-mysql"
@@ -8,7 +9,7 @@ import (
 )
 
 type User interface {
-	CreateUser(user models.User) error
+	CreateUser(ctx context.Context, user models.User) error
 }
 
 type Storage struct {
