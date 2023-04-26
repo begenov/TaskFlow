@@ -9,6 +9,7 @@ import (
 type userProvider interface {
 	SignUp(ctx *gin.Context)
 	SignUpForm(ctx *gin.Context)
+	SignIn(ctx *gin.Context)
 }
 
 type Controller interface {

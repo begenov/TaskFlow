@@ -6,6 +6,10 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
+var Secret = []byte("secret")
+
+const Userkey = "user"
+
 type Todo struct {
 	ID          int    `json:"id"`
 	Title       string `json:"title"`

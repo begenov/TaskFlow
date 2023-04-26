@@ -10,6 +10,7 @@ import (
 
 type userProvider interface {
 	CreateUser(ctx context.Context, user models.User) error
+	User(ctx context.Context, email string, password string) (models.User, error)
 }
 
 type Service struct {

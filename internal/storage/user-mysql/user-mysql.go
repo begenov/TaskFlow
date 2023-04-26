@@ -28,4 +28,12 @@ func (u *UserStorage) CreateUser(ctx context.Context, user models.User) error {
 	return nil
 }
 
-//INSERT INTO users(email, password) VALUES(?, ?)
+func (u *UserStorage) UserByEmail(ctx context.Context, email string) (models.User, error) {
+	var user models.User
+	stmt := `SELECT id, username, email, password, created_at FROM user WHERE email = ?`
+	if err := u.db.QueryRowContext(ctx, stmt, &email).Scan(&user.ID, &user.Username, &user.Email, &user.CreatedAt); err != nil {
+		return user, err
+	}
+
+	return user, nil
+}

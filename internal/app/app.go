@@ -26,5 +26,5 @@ func Run() error {
 	service := service.NewService(*storage)
 	controller := controller.NewController(*service)
 
-	return controller.Router().Run(":8080")
+	return controller.Router().Run()
 }
