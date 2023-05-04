@@ -3,6 +3,7 @@ package controller
 import (
 	"log"
 	"net/http"
+	"testing"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -67,5 +68,9 @@ func authMiddleware() gin.HandlerFunc {
 
 		ctx.Next()
 	}
+
+}
+
+func test(t testing.M) {
 
 }
