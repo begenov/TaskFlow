@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"testing"
@@ -75,4 +76,5 @@ func authMiddleware() gin.HandlerFunc {
 func test(t testing.M) {
 	r := 0
 	helloalem := "gfnhfg"
+	fmt.Println(r, helloalem)
 }
