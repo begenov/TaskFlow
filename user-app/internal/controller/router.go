@@ -71,6 +71,7 @@ func authMiddleware() gin.HandlerFunc {
 
 }
 
+// test
 func test(t testing.M) {
 
 }
