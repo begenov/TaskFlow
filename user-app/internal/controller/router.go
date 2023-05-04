@@ -73,5 +73,6 @@ func authMiddleware() gin.HandlerFunc {
 
 // test
 func test(t testing.M) {
-
+	r := 0
+	helloalem := "gfnhfg"
 }
