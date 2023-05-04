@@ -3,7 +3,7 @@ package models
 import (
 	"time"
 
-	"github.com/golang-jwt/jwt"
+	"github.com/dgrijalva/jwt-go"
 )
 
 var Secret = []byte("secret")
@@ -19,7 +19,7 @@ type Todo struct {
 type User struct {
 	ID        int       `json:"id"`
 	Username  string    `json:"username"`
-	Email     string    `json:"email"`
+	Email     string    `json:"email" binding:"required"`
 	CreatedAt time.Time `json:"created_at"`
 	Password  string    `json:"password"`
 }
