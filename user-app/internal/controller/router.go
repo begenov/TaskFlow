@@ -1,10 +1,8 @@
 package controller
 
 import (
-	"fmt"
 	"log"
 	"net/http"
-	"testing"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
@@ -73,8 +71,3 @@ func authMiddleware() gin.HandlerFunc {
 }
 
 // test
-func test(t testing.M) {
-	r := 0
-	helloalem := "gfnhfg"
-	fmt.Println(r, helloalem)
-}
