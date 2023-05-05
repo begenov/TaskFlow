@@ -11,6 +11,7 @@ import (
 type User interface {
 	CreateUser(ctx context.Context, user models.User) error
 	UserByEmail(ctx context.Context, email string) (models.User, error)
+	UserByID(ctx context.Context, id int) (models.User, error)
 }
 
 type Storage struct {

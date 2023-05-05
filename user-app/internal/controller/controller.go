@@ -17,11 +17,13 @@ type Controller interface {
 }
 
 type controller struct {
-	user userProvider
+	user    userProvider
+	service service.Service
 }
 
 func NewController(service service.Service) Controller {
 	return &controller{
-		user: usercontroller.NewUserController(service.User),
+		user:    usercontroller.NewUserController(service.User),
+		service: service,
 	}
 }

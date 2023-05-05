@@ -1,11 +1,12 @@
 package controller
 
 import (
-	"log"
+	"context"
+	"database/sql"
 	"net/http"
 
+	"github.com/begenov/TaskFlow/user-app/internal/models"
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
 )
 
 func (c *controller) Router() *gin.Engine {
@@ -16,58 +17,37 @@ func (c *controller) Router() *gin.Engine {
 	{
 		user.POST("/sign-up", c.user.SignUp)
 		user.POST("/sign-in", c.user.SignIn)
+
 	}
 
 	home := mux.Group("/")
 
 	{
-		home.GET("/home", authMiddleware(), homepage)
+		home.GET("/home", authMiddleware(), c.homepage)
 	}
 
 	return mux
 }
 
-func homepage(ctx *gin.Context) {
+func (c *controller) homepage(ctx *gin.Context) {
+	var data models.Data
+
+	user_id := ctx.Value("user_id").(float64)
+
+	user, err := c.service.User.UserByID(context.Background(), int(user_id))
+
+	if err != nil {
+		if err != sql.ErrNoRows {
+			ctx.JSON(http.StatusBadRequest, gin.H{
+				"ERROR": "ERROR",
+			})
+		}
+	} else {
+		data.UserName = user.Username
+	}
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"info": "ok",
+		"info": data,
 	})
 
 }
-
-func authMiddleware() gin.HandlerFunc {
-	return func(ctx *gin.Context) {
-		authHeader := ctx.Request.Header.Get("Authorization")
-
-		if authHeader == "" {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
-				"ERROR": "Status Unauthorized",
-			})
-			return
-		}
-
-		token, err := jwt.Parse(authHeader[7:], func(t *jwt.Token) (interface{}, error) {
-			return []byte("Oraz"), nil
-		})
-
-		if err != nil {
-			log.Println("error")
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-			return
-		}
-
-		if !token.Valid {
-			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
-			return
-		}
-
-		claims := token.Claims.(jwt.MapClaims)
-		userID := claims["user_id"].(string)
-		ctx.Set("user_id", userID)
-
-		ctx.Next()
-	}
-
-}
-
-// test

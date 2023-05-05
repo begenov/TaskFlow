@@ -2,16 +2,21 @@ package serviceuser
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
+	"log"
 	"strings"
+	"time"
 
 	"github.com/begenov/TaskFlow/user-app/internal/models"
+	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
 )
 
 type userProvider interface {
 	CreateUser(ctx context.Context, user models.User) error
 	UserByEmail(ctx context.Context, email string) (models.User, error)
+	UserByID(ctx context.Context, id int) (models.User, error)
 }
 
 type UserService struct {
@@ -38,20 +43,57 @@ func (u *UserService) CreateUser(ctx context.Context, user models.User) error {
 }
 
 func (u *UserService) User(ctx context.Context, email string, password string) (models.User, error) {
-	if ok := emptyUserPass(email, password); !ok {
-		return models.User{}, fmt.Errorf("empty user pass")
+	if err := emptyUserPass(email, password); err != nil {
+		return models.User{}, err
 	}
-
 	user, err := u.user.UserByEmail(ctx, email)
 	if err != nil {
 		return user, err
 	}
 
 	if ok := checkUserPass(user.Password, password); !ok {
-		return user, fmt.Errorf("check user password incorrect")
+		return user, fmt.Errorf("incorrect: check email or password")
+	}
+
+	user.TokenStr, err = genereteJWToken(user.ID)
+	if err != nil {
+		return user, fmt.Errorf("inctrrect: check email or password ")
 	}
 
 	return user, nil
+
+}
+
+func (u *UserService) UserByID(ctx context.Context, id int) (models.User, error) {
+	if id <= 0 {
+		return models.User{}, sql.ErrNoRows
+	}
+
+	return u.user.UserByID(ctx, id)
+
+}
+
+// help
+func genereteJWToken(userID int) (string, error) {
+
+	// var mySigningKey = []byte(sampleSecretKey)
+	exe := time.Now().Add(10 * time.Minute)
+	fmt.Println(userID)
+	claims := models.Claims{
+		UserID: userID,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: exe.Unix(),
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokemstr, err := token.SignedString([]byte("Oraz"))
+	if err != nil {
+		log.Println(err)
+		return "", err
+	}
+
+	return tokemstr, nil
 
 }
 
@@ -60,8 +102,16 @@ func checkUserPass(password_hash string, password string) bool {
 	return err == nil
 }
 
-func emptyUserPass(email string, password string) bool {
-	return strings.Trim(email, " ") == "" || strings.Trim(password, " ") == ""
+func emptyUserPass(email string, password string) error {
+	fmt.Println(email, password)
+	if strings.TrimSpace(email) == "" {
+		return fmt.Errorf("error empty email")
+	}
+
+	if strings.TrimSpace(password) == "" {
+		return fmt.Errorf("error empty password")
+	}
+	return nil
 
 }
 

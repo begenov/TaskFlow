@@ -21,10 +21,17 @@ type User struct {
 	Username  string    `json:"username"`
 	Email     string    `json:"email" binding:"required"`
 	CreatedAt time.Time `json:"created_at"`
-	Password  string    `json:"password"`
+	Password  string    `json:"password" binding:"required"`
+	TokenStr  string
+}
+
+type Data struct {
+	Todos    []Todo
+	UserName string
+	Todo     Todo
 }
 
 type Claims struct {
-	Username string `json:"username"`
+	UserID int `json:"user_id"`
 	jwt.StandardClaims
 }

@@ -30,10 +30,22 @@ func (u *UserStorage) CreateUser(ctx context.Context, user models.User) error {
 
 func (u *UserStorage) UserByEmail(ctx context.Context, email string) (models.User, error) {
 	var user models.User
+
 	stmt := `SELECT id, username, email, password, created_at FROM user WHERE email = ?`
-	if err := u.db.QueryRowContext(ctx, stmt, &email).Scan(&user.ID, &user.Username, &user.Email, &user.CreatedAt); err != nil {
+	row := u.db.QueryRowContext(ctx, stmt, email)
+	if err := row.Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.CreatedAt); err != nil {
 		return user, err
 	}
+	return user, nil
+}
 
+func (u *UserStorage) UserByID(ctx context.Context, id int) (models.User, error) {
+	var user models.User
+
+	stmt := `SELECT id, username, email, password, created_at FROM user WHERE id = ?`
+	row := u.db.QueryRowContext(ctx, stmt, id)
+	if err := row.Scan(&user.ID, &user.Username, &user.Email, &user.Password, &user.CreatedAt); err != nil {
+		return user, err
+	}
 	return user, nil
 }
