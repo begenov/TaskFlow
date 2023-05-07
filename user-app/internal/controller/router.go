@@ -13,17 +13,17 @@ func (c *controller) Router() *gin.Engine {
 
 	mux := gin.Default()
 
+	home := mux.Group("/")
+
+	{
+		home.GET("/home", c.userIdentity, c.homepage)
+	}
+
 	user := mux.Group("/user")
 	{
 		user.POST("/sign-up", c.user.SignUp)
 		user.POST("/sign-in", c.user.SignIn)
 
-	}
-
-	home := mux.Group("/")
-
-	{
-		home.GET("/home", c.userIdentity, c.homepage)
 	}
 
 	return mux

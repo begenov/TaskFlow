@@ -82,23 +82,3 @@ func (u *UserController) SignIn(ctx *gin.Context) {
 	})
 
 }
-
-/*
-func Logout(c *gin.Context) {
-	err := deleteTokenFromCache(c.Request.Header.Get("Authorization"))
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal Server Error"})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"message": "Logout successful"})
-}
-
-func deleteTokenFromCache(tokenString string) error {
-	err := cacheClient.Del(context.Background(), tokenString).Err()
-	if err != nil {
-		return err
-	}
-	return nil
-}
-*/
