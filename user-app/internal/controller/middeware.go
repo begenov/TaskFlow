@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"log"
 	"net/http"
 	"strings"
 
@@ -24,8 +25,21 @@ func (c *controller) userIdentity(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"ERROR": "invalid auth header",
 		})
-	}	
+	}
+
+	userID, err := c.service.User.ParseToken(headerParts[1])
+
+	if err != nil {
+		log.Println("error")
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"ERROR": err.Error(),
+		})
+	}
+
+	ctx.Set("user_id", userID)
+
 	// parse token
+}
 
 /*
 	return func(ctx *gin.Context) {
