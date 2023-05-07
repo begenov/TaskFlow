@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"log"
 	"strings"
 	"time"
 
@@ -79,17 +78,6 @@ func (u *UserService) User(ctx context.Context, email string, password string) (
 }
 
 func (u *UserService) ParseToken(accessToken string) (int, error) {
-	/*token, err := jwt.ParseWithClaims(accessToken, models.Claims{}, func(t *jwt.Token) (interface{}, error) {
-		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, errors.New("invalid signing method")
-		}
-		return []byte(key), nil
-	})
-	if err != nil {
-		log.Println("ok")
-		return 0, err
-	}
-	*/
 	token, err := jwt.Parse(accessToken, func(t *jwt.Token) (interface{}, error) {
 		return []byte(key), nil
 	})
@@ -105,12 +93,12 @@ func (u *UserService) ParseToken(accessToken string) (int, error) {
 		return 0, err
 	}
 	claims := token.Claims.(jwt.MapClaims)
-	_, ok := claims["user_id"].(string)
+	userIDFloat64, ok := claims["user_id"].(float64)
 	if !ok {
-		return 0, errors.New("token claims are not of type *tokenClaims")
+		return 0, errors.New("user_id is not a number")
 	}
-	log.Println("ok")
-	return 0, nil
+	userID := int(userIDFloat64)
+	return userID, nil
 }
 
 func genereteJWToken(userID int) (string, error) {

@@ -32,9 +32,12 @@ func (c *controller) Router() *gin.Engine {
 func (c *controller) homepage(ctx *gin.Context) {
 	var data models.Data
 
-	user_id := ctx.Value("user_id").(float64)
-
-	user, err := c.service.User.UserByID(context.Background(), int(user_id))
+	user_id, ok := ctx.Value("user_id").(int)
+	if !ok {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "Failed to get user ID"})
+		return
+	}
+	user, err := c.service.User.UserByID(context.Background(), user_id)
 
 	if err != nil {
 		if err != sql.ErrNoRows {
