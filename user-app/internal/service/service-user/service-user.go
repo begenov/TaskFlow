@@ -4,13 +4,16 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"log"
 	"strings"
 	"time"
 
 	"github.com/begenov/TaskFlow/user-app/internal/models"
 	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
+)
+
+const (
+	key = "Oraz"
 )
 
 type userProvider interface {
@@ -73,10 +76,8 @@ func (u *UserService) UserByID(ctx context.Context, id int) (models.User, error)
 
 }
 
-// help
 func genereteJWToken(userID int) (string, error) {
 
-	// var mySigningKey = []byte(sampleSecretKey)
 	exe := time.Now().Add(10 * time.Minute)
 	fmt.Println(userID)
 	claims := models.Claims{
@@ -87,9 +88,8 @@ func genereteJWToken(userID int) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokemstr, err := token.SignedString([]byte("Oraz"))
+	tokemstr, err := token.SignedString([]byte(key))
 	if err != nil {
-		log.Println(err)
 		return "", err
 	}
 

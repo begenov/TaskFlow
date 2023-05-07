@@ -83,6 +83,7 @@ func (u *UserController) SignIn(ctx *gin.Context) {
 
 }
 
+/*
 func Logout(c *gin.Context) {
 	err := deleteTokenFromCache(c.Request.Header.Get("Authorization"))
 	if err != nil {
@@ -100,3 +101,4 @@ func deleteTokenFromCache(tokenString string) error {
 	}
 	return nil
 }
+*/

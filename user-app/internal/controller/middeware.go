@@ -1,15 +1,33 @@
 package controller
 
 import (
-	"fmt"
-	"log"
 	"net/http"
+	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt"
 )
 
-func authMiddleware() gin.HandlerFunc {
+const (
+	authorizationHeader = "Authorization"
+)
+
+func (c *controller) userIdentity(ctx *gin.Context) {
+	header := ctx.GetHeader(authorizationHeader)
+	if strings.TrimSpace(header) == "" {
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"ERROR": "invalid auth header",
+		})
+		return
+	}
+	headerParts := strings.Split(header, " ")
+	if len(headerParts) != 2 {
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
+			"ERROR": "invalid auth header",
+		})
+	}	
+	// parse token
+
+/*
 	return func(ctx *gin.Context) {
 		authHeader := ctx.Request.Header.Get("Authorization")
 
@@ -51,4 +69,4 @@ func authMiddleware() gin.HandlerFunc {
 		ctx.Next()
 	}
 
-}
+*/
