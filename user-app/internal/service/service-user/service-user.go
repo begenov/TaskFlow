@@ -3,7 +3,6 @@ package serviceuser
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -11,18 +10,14 @@ import (
 	"github.com/begenov/TaskFlow/pkg/auth"
 	"github.com/begenov/TaskFlow/user-app/internal/config"
 	"github.com/begenov/TaskFlow/user-app/internal/models"
-	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
-)
-
-const (
-	key = "Oraz"
 )
 
 type userProvider interface {
 	CreateUser(ctx context.Context, user models.User) error
 	UserByEmail(ctx context.Context, email string) (models.User, error)
 	UserByID(ctx context.Context, id int) (models.User, error)
+	SetSession(ctx context.Context, userID int, session models.Session) error
 }
 
 type UserService struct {
@@ -74,34 +69,11 @@ func (u *UserService) User(ctx context.Context, email string, password string) (
 		return models.Tokens{}, fmt.Errorf("incorrect: check email or password")
 	}
 
-	// user.TokenStr, err = u.genereteJWToken(user.ID)
-	// if err != nil {
-	// 	return models.Tokens{}, fmt.Errorf("inctrrect: check email or password ")
-	// }
-
-	// return user, nil
 	return u.createSession(ctx, user.ID)
 }
 
 func (u *UserService) ParseToken(accessToken string) (int, error) {
-	token, err := jwt.Parse(accessToken, func(t *jwt.Token) (interface{}, error) {
-		return []byte(key), nil
-	})
-
-	if err != nil {
-		return 0, err
-	}
-
-	if !token.Valid {
-		return 0, err
-	}
-	claims := token.Claims.(jwt.MapClaims)
-	userIDFloat64, ok := claims["user_id"].(float64)
-	if !ok {
-		return 0, errors.New("user_id is not a number")
-	}
-	userID := int(userIDFloat64)
-	return userID, nil
+	return u.tokenManager.Parse(accessToken)
 }
 
 func (u *UserService) createSession(ctx context.Context, userID int) (models.Tokens, error) {
@@ -123,6 +95,9 @@ func (u *UserService) createSession(ctx context.Context, userID int) (models.Tok
 		ExpiresAt:    time.Now().Add(u.cfg.JWT.RefreshTokenTTL),
 	}
 	fmt.Println(session)
+	if err := u.user.SetSession(ctx, userID, session); err != nil {
+		return res, err
+	}
 	return res, nil
 }
 

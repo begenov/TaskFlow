@@ -16,7 +16,7 @@ func (c *controller) Router() *gin.Engine {
 	home := mux.Group("/")
 
 	{
-		home.GET("", c.userIdentity, c.homepage)
+		home.GET("/home", c.userIdentity, c.homepage)
 	}
 
 	user := mux.Group("/user")
