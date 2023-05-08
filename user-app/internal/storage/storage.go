@@ -12,6 +12,7 @@ type User interface {
 	CreateUser(ctx context.Context, user models.User) error
 	UserByEmail(ctx context.Context, email string) (models.User, error)
 	UserByID(ctx context.Context, id int) (models.User, error)
+	SetSession(ctx context.Context, userID int, session models.Session) error
 }
 
 type Storage struct {

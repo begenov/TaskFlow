@@ -4,6 +4,8 @@ CREATE TABLE user (
   email VARCHAR(50) NOT NULL,
   password VARCHAR(255) NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  session VARCHAR(50) NOT NULL,
+  last_visit_at DATETIME NOT NULL,
   PRIMARY KEY (id),
   UNIQUE (email)
 );

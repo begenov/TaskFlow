@@ -49,3 +49,18 @@ func (u *UserStorage) UserByID(ctx context.Context, id int) (models.User, error)
 	}
 	return user, nil
 }
+
+func (u *UserStorage) SetSession(ctx context.Context, userID int, session models.Session) error {
+	stmt, err := u.db.PrepareContext(ctx, "UPDATE user SET session=?, lastVisitAt=? WHERE id = ?")
+	if err != nil {
+		return err
+	}
+
+	defer stmt.Close()
+
+	_, err = stmt.ExecContext(ctx, session.RefreshToken, session.ExpiresAt, userID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
