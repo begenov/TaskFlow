@@ -4,19 +4,19 @@ import (
 	"flag"
 
 	"github.com/begenov/TaskFlow/pkg/auth"
+	"github.com/begenov/TaskFlow/pkg/postgresql"
 	"github.com/begenov/TaskFlow/user-app/internal/config"
 	"github.com/begenov/TaskFlow/user-app/internal/controller"
 	"github.com/begenov/TaskFlow/user-app/internal/service"
 	"github.com/begenov/TaskFlow/user-app/internal/storage"
-	"github.com/begenov/TaskFlow/user-app/internal/storage/mysql"
 )
 
 var dsn *string
 
-const driver = "mysql"
+const driver = "postgres"
 
 func init() {
-	dsn = flag.String("dsn", "task:pass@/task?parseTime=true", "Name mysql")
+	dsn = flag.String("dsn", "postgresql://root:secret@localhost:5432/user?sslmode=disable", "Name postgresql")
 }
 
 func Run() error {
@@ -30,7 +30,7 @@ func Run() error {
 	if err != nil {
 		return err
 	}
-	db, err := mysql.NewDB(driver, *dsn)
+	db, err := postgresql.NewDB(driver, *dsn)
 	if err != nil {
 		return err
 	}

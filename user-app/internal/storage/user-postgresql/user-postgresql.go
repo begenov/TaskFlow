@@ -1,4 +1,4 @@
-package usermysql
+package postgresql
 
 import (
 	"context"
@@ -18,7 +18,7 @@ func NewUserStorage(db *sql.DB) *UserStorage {
 }
 
 func (u *UserStorage) CreateUser(ctx context.Context, user models.User) error {
-	stmt := `INSERT INTO user (username, email, password) VALUES (?, ?, ?)`
+	stmt := `INSERT INTO "user" (username, email, password) VALUES ($1, $2, $3)`
 	if _, err := u.db.ExecContext(ctx, stmt, &user.Username, &user.Email, &user.Password); err != nil {
 		if mysqlErr, ok := err.(*mysql.MySQLError); ok && mysqlErr.Number == 1062 {
 			return fmt.Errorf("email already exists %v", err)

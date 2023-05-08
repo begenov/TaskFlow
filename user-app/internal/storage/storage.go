@@ -5,7 +5,7 @@ import (
 	"database/sql"
 
 	"github.com/begenov/TaskFlow/user-app/internal/models"
-	usermysql "github.com/begenov/TaskFlow/user-app/internal/storage/user-mysql"
+	userpostgresql "github.com/begenov/TaskFlow/user-app/internal/storage/user-postgresql"
 )
 
 type User interface {
@@ -21,6 +21,6 @@ type Storage struct {
 
 func NewStorage(db *sql.DB) *Storage {
 	return &Storage{
-		User: usermysql.NewUserStorage(db),
+		User: userpostgresql.NewUserStorage(db),
 	}
 }
