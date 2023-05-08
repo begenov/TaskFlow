@@ -9,6 +9,8 @@ import (
 	"github.com/subosito/gotenv"
 )
 
+const path = "../.env"
+
 type (
 	Config struct {
 		JWT jwt_config
@@ -22,7 +24,7 @@ type (
 )
 
 func NewConfig() (*Config, error) {
-	err := gotenv.Load()
+	err := gotenv.Load(path)
 	if err != nil {
 		return nil, err
 	}

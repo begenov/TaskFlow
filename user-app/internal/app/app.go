@@ -3,6 +3,7 @@ package app
 import (
 	"flag"
 
+	"github.com/begenov/TaskFlow/user-app/internal/config"
 	"github.com/begenov/TaskFlow/user-app/internal/controller"
 	"github.com/begenov/TaskFlow/user-app/internal/service"
 	"github.com/begenov/TaskFlow/user-app/internal/storage"
@@ -18,12 +19,18 @@ func init() {
 }
 
 func Run() error {
+
+	cfg, err := config.NewConfig()
+	if err != nil {
+		return err
+	}
+
 	db, err := mysql.NewDB(driver, *dsn)
 	if err != nil {
 		return err
 	}
 	storage := storage.NewStorage(db)
-	service := service.NewService(*storage)
+	service := service.NewService(*storage, cfg)
 	controller := controller.NewController(*service)
 
 	return controller.Router().Run()

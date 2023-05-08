@@ -35,3 +35,13 @@ type Claims struct {
 	UserID int `json:"user_id"`
 	jwt.StandardClaims
 }
+
+type Tokens struct {
+	AccessToken  string
+	RefreshToken string
+}
+
+type Session struct {
+	RefreshToken string
+	ExpiresAt    time.Time
+}

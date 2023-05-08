@@ -8,6 +8,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/begenov/TaskFlow/pkg/auth"
+	"github.com/begenov/TaskFlow/user-app/internal/config"
 	"github.com/begenov/TaskFlow/user-app/internal/models"
 	"github.com/dgrijalva/jwt-go"
 	"golang.org/x/crypto/bcrypt"
@@ -24,12 +26,15 @@ type userProvider interface {
 }
 
 type UserService struct {
-	user userProvider
+	user         userProvider
+	cfg          config.Config
+	tokenManager auth.TokenManager
 }
 
-func NewUserService(user userProvider) *UserService {
+func NewUserService(user userProvider, cfg *config.Config) *UserService {
 	return &UserService{
 		user: user,
+		cfg:  *cfg,
 	}
 }
 
@@ -68,7 +73,7 @@ func (u *UserService) User(ctx context.Context, email string, password string) (
 		return user, fmt.Errorf("incorrect: check email or password")
 	}
 
-	user.TokenStr, err = genereteJWToken(user.ID)
+	user.TokenStr, err = u.genereteJWToken(user.ID)
 	if err != nil {
 		return user, fmt.Errorf("inctrrect: check email or password ")
 	}
@@ -82,10 +87,7 @@ func (u *UserService) ParseToken(accessToken string) (int, error) {
 		return []byte(key), nil
 	})
 
-	fmt.Println(token)
-
 	if err != nil {
-		fmt.Println("userID")
 		return 0, err
 	}
 
@@ -101,14 +103,11 @@ func (u *UserService) ParseToken(accessToken string) (int, error) {
 	return userID, nil
 }
 
-func genereteJWToken(userID int) (string, error) {
-
-	exe := time.Now().Add(10 * time.Minute)
-	fmt.Println(userID)
+func (u *UserService) genereteJWToken(userID int) (string, error) {
 	claims := models.Claims{
 		UserID: userID,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: exe.Unix(),
+			ExpiresAt: time.Now().Add(u.cfg.JWT.AccessTokenTTL).Unix(),
 		},
 	}
 
@@ -120,6 +119,27 @@ func genereteJWToken(userID int) (string, error) {
 
 	return tokemstr, nil
 
+}
+
+func (u *UserService) createSession(ctx context.Context, userID int) (models.Tokens, error) {
+	var (
+		res models.Tokens
+		err error
+	)
+	res.AccessToken, err = u.tokenManager.NewJWT(userID, u.cfg.JWT.AccessTokenTTL)
+	if err != nil {
+		return res, err
+	}
+	res.RefreshToken, err = u.tokenManager.NewRefreshToken()
+	if err != nil {
+		return res, err
+	}
+	session := models.Session{
+		RefreshToken: res.RefreshToken,
+		ExpiresAt:    time.Now().Add(u.cfg.JWT.RefreshTokenTTL),
+	}
+	fmt.Println(session)
+	return res, nil
 }
 
 func checkUserPass(password_hash string, password string) bool {
