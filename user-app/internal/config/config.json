@@ -1,0 +1,5 @@
+{
+    "jwt_config": {
+        "access_token_ttl": 15
+    }
+}
