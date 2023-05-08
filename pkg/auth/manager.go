@@ -3,6 +3,7 @@ package auth
 import (
 	"errors"
 	"fmt"
+	"log"
 	"math/rand"
 	"time"
 
@@ -34,13 +35,19 @@ func NewManager(signinKey string) (TokenManager, error) {
 }
 
 func (m *manager) NewJWT(userID int, ttl time.Duration) (string, error) {
-	token := jwt.NewWithClaims(jwt.SigningMethodES256, claims{
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims{
 		UserID: userID,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(ttl).Unix(),
 		},
 	})
-	return token.SignedString([]byte(m.signinKey))
+	tokenRes, err := token.SignedString([]byte(m.signinKey))
+
+	if err != nil {
+		log.Println(err, "TOKEN")
+		return "", err
+	}
+	return tokenRes, nil
 }
 
 func (m *manager) Parse(accessToken string) (int, error) {
