@@ -2,6 +2,7 @@ package app
 
 import (
 	"flag"
+	"fmt"
 
 	"github.com/begenov/TaskFlow/pkg/auth"
 	"github.com/begenov/TaskFlow/pkg/postgresql"
@@ -25,7 +26,7 @@ func Run() error {
 	if err != nil {
 		return err
 	}
-
+	fmt.Println(cfg)
 	tokenManager, err := auth.NewManager(cfg.JWT.SigninKey)
 	if err != nil {
 		return err

@@ -42,7 +42,7 @@ func NewConfig() (*Config, error) {
 	return &Config{
 		JWT: jwt_config{
 			AccessTokenTTL:  time.Duration(accessTokenTTL) * time.Minute,
-			RefreshTokenTTL: time.Duration(refreshTokenTTL) * time.Hour,
+			RefreshTokenTTL: time.Duration(refreshTokenTTL) * time.Minute,
 			SigninKey:       os.Getenv("SIGNIN_KEY"),
 		},
 	}, nil

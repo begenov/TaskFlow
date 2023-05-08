@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"log"
 	"net/http"
 	"strings"
 
@@ -30,10 +29,11 @@ func (c *controller) userIdentity(ctx *gin.Context) {
 	userID, err := c.service.User.ParseToken(headerParts[1])
 
 	if err != nil {
-		log.Println("error")
+
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"ERROR": err.Error(),
 		})
+
 	}
 
 	ctx.Set("user_id", userID)

@@ -13,6 +13,7 @@ import (
 type userProvider interface {
 	CreateUser(ctx context.Context, user models.User) error
 	User(ctx context.Context, email string, password string) (models.Tokens, error)
+	RefreshToken(ctx context.Context, refreshToken string) (models.Tokens, error)
 }
 
 type UserController struct {
@@ -81,4 +82,29 @@ func (u *UserController) SignIn(ctx *gin.Context) {
 		"success": tokens,
 	})
 
+}
+
+type refreshToken struct {
+	Token string `json:"token" binding:"required"`
+}
+
+func (c *UserController) UserRefresh(ctx *gin.Context) {
+	var inp refreshToken
+	if err := ctx.BindJSON(&inp); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"content": fmt.Sprint(err),
+		})
+		return
+	}
+	res, err := c.user.RefreshToken(context.Background(), inp.Token)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{
+			"content": fmt.Sprint(err),
+		})
+		return
+	}
+	ctx.JSON(http.StatusOK, models.Tokens{
+		AccessToken:  res.AccessToken,
+		RefreshToken: res.RefreshToken,
+	})
 }

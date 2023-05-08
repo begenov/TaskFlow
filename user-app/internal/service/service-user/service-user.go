@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"log"
 	"strings"
 	"time"
 
@@ -18,6 +19,7 @@ type userProvider interface {
 	UserByEmail(ctx context.Context, email string) (models.User, error)
 	UserByID(ctx context.Context, id int) (models.User, error)
 	SetSession(ctx context.Context, userID int, session models.Session) error
+	GetByRefreshToken(ctx context.Context, refreshToken string) (models.User, error)
 }
 
 type UserService struct {
@@ -77,6 +79,15 @@ func (u *UserService) ParseToken(accessToken string) (int, error) {
 	return u.tokenManager.Parse(accessToken)
 }
 
+func (u *UserService) RefreshToken(ctx context.Context, refreshToken string) (models.Tokens, error) {
+	user, err := u.user.GetByRefreshToken(ctx, refreshToken)
+	if err != nil {
+		log.Println("error get")
+		return models.Tokens{}, err
+	}
+	return u.createSession(ctx, user.ID)
+}
+
 func (u *UserService) createSession(ctx context.Context, userID int) (models.Tokens, error) {
 	var (
 		res models.Tokens
@@ -95,7 +106,6 @@ func (u *UserService) createSession(ctx context.Context, userID int) (models.Tok
 		RefreshToken: res.RefreshToken,
 		ExpiresAt:    time.Now().Add(u.cfg.JWT.RefreshTokenTTL),
 	}
-	fmt.Println(session)
 	if err := u.user.SetSession(ctx, userID, session); err != nil {
 		return res, err
 	}

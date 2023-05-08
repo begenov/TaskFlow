@@ -13,6 +13,7 @@ type User interface {
 	UserByEmail(ctx context.Context, email string) (models.User, error)
 	UserByID(ctx context.Context, id int) (models.User, error)
 	SetSession(ctx context.Context, userID int, session models.Session) error
+	GetByRefreshToken(ctx context.Context, refreshToken string) (models.User, error)
 }
 
 type Storage struct {

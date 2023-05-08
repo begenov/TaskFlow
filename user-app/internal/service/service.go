@@ -15,6 +15,7 @@ type userProvider interface {
 	User(ctx context.Context, email string, password string) (models.Tokens, error)
 	UserByID(ctx context.Context, id int) (models.User, error)
 	ParseToken(accessToken string) (int, error)
+	RefreshToken(ctx context.Context, refreshToken string) (models.Tokens, error)
 }
 
 type Service struct {

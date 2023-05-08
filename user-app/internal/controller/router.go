@@ -23,6 +23,7 @@ func (c *controller) Router() *gin.Engine {
 	{
 		user.POST("/sign-up", c.user.SignUp)
 		user.POST("/sign-in", c.user.SignIn)
+		user.POST("/auth/refresh", c.user.UserRefresh)
 
 	}
 
@@ -45,6 +46,7 @@ func (c *controller) homepage(ctx *gin.Context) {
 				"ERROR": "ERROR",
 			})
 		}
+		return
 	} else {
 		data.UserName = user.Username
 	}
