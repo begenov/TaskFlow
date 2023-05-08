@@ -12,7 +12,7 @@ import (
 
 type userProvider interface {
 	CreateUser(ctx context.Context, user models.User) error
-	User(ctx context.Context, email string, password string) (models.User, error)
+	User(ctx context.Context, email string, password string) (models.Tokens, error)
 }
 
 type UserController struct {
@@ -69,7 +69,7 @@ func (u *UserController) SignIn(ctx *gin.Context) {
 
 	}
 
-	user, err := u.user.User(context.Background(), user.Email, user.Password)
+	tokens, err := u.user.User(context.Background(), user.Email, user.Password)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"content": fmt.Sprint(err),
@@ -78,7 +78,7 @@ func (u *UserController) SignIn(ctx *gin.Context) {
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{
-		"success": user.TokenStr,
+		"success": tokens,
 	})
 
 }

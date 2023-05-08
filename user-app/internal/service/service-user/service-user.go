@@ -31,10 +31,11 @@ type UserService struct {
 	tokenManager auth.TokenManager
 }
 
-func NewUserService(user userProvider, cfg *config.Config) *UserService {
+func NewUserService(user userProvider, cfg *config.Config, tokenManager auth.TokenManager) *UserService {
 	return &UserService{
-		user: user,
-		cfg:  *cfg,
+		user:         user,
+		cfg:          *cfg,
+		tokenManager: tokenManager,
 	}
 }
 
@@ -60,26 +61,26 @@ func (u *UserService) UserByID(ctx context.Context, id int) (models.User, error)
 
 }
 
-func (u *UserService) User(ctx context.Context, email string, password string) (models.User, error) {
+func (u *UserService) User(ctx context.Context, email string, password string) (models.Tokens, error) {
 	if err := emptyUserPass(email, password); err != nil {
-		return models.User{}, err
+		return models.Tokens{}, err
 	}
 	user, err := u.user.UserByEmail(ctx, email)
 	if err != nil {
-		return user, err
+		return models.Tokens{}, err
 	}
 
 	if ok := checkUserPass(user.Password, password); !ok {
-		return user, fmt.Errorf("incorrect: check email or password")
+		return models.Tokens{}, fmt.Errorf("incorrect: check email or password")
 	}
 
-	user.TokenStr, err = u.genereteJWToken(user.ID)
-	if err != nil {
-		return user, fmt.Errorf("inctrrect: check email or password ")
-	}
+	// user.TokenStr, err = u.genereteJWToken(user.ID)
+	// if err != nil {
+	// 	return models.Tokens{}, fmt.Errorf("inctrrect: check email or password ")
+	// }
 
-	return user, nil
-
+	// return user, nil
+	return u.createSession(ctx, user.ID)
 }
 
 func (u *UserService) ParseToken(accessToken string) (int, error) {
@@ -103,24 +104,6 @@ func (u *UserService) ParseToken(accessToken string) (int, error) {
 	return userID, nil
 }
 
-func (u *UserService) genereteJWToken(userID int) (string, error) {
-	claims := models.Claims{
-		UserID: userID,
-		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(u.cfg.JWT.AccessTokenTTL).Unix(),
-		},
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	tokemstr, err := token.SignedString([]byte(key))
-	if err != nil {
-		return "", err
-	}
-
-	return tokemstr, nil
-
-}
-
 func (u *UserService) createSession(ctx context.Context, userID int) (models.Tokens, error) {
 	var (
 		res models.Tokens
@@ -128,6 +111,7 @@ func (u *UserService) createSession(ctx context.Context, userID int) (models.Tok
 	)
 	res.AccessToken, err = u.tokenManager.NewJWT(userID, u.cfg.JWT.AccessTokenTTL)
 	if err != nil {
+
 		return res, err
 	}
 	res.RefreshToken, err = u.tokenManager.NewRefreshToken()
@@ -167,3 +151,22 @@ func generatePasswordAndHash(password []byte) (string, error) {
 	}
 	return string(hash), err
 }
+
+/*
+func (u *UserService) genereteJWToken(userID int) (string, error) {
+	claims := models.Claims{
+		UserID: userID,
+		StandardClaims: jwt.StandardClaims{
+			ExpiresAt: time.Now().Add(u.cfg.JWT.AccessTokenTTL).Unix(),
+		},
+	}
+
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	tokemstr, err := token.SignedString([]byte(key))
+	if err != nil {
+		return "", err
+	}
+
+	return tokemstr, nil
+
+}*/

@@ -3,6 +3,7 @@ package app
 import (
 	"flag"
 
+	"github.com/begenov/TaskFlow/pkg/auth"
 	"github.com/begenov/TaskFlow/user-app/internal/config"
 	"github.com/begenov/TaskFlow/user-app/internal/controller"
 	"github.com/begenov/TaskFlow/user-app/internal/service"
@@ -25,12 +26,16 @@ func Run() error {
 		return err
 	}
 
+	tokenManager, err := auth.NewManager(cfg.JWT.SigninKey)
+	if err != nil {
+		return err
+	}
 	db, err := mysql.NewDB(driver, *dsn)
 	if err != nil {
 		return err
 	}
 	storage := storage.NewStorage(db)
-	service := service.NewService(*storage, cfg)
+	service := service.NewService(*storage, cfg, tokenManager)
 	controller := controller.NewController(*service)
 
 	return controller.Router().Run()
