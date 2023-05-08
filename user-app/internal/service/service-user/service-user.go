@@ -42,6 +42,7 @@ func (u *UserService) CreateUser(ctx context.Context, user models.User) error {
 	user.Password = hash
 	err = u.user.CreateUser(ctx, user)
 	if err != nil {
+
 		return fmt.Errorf("error create user %w", err)
 	}
 	return nil
