@@ -29,7 +29,7 @@ func main() {
 
 	service := service.NewService(*storage)
 
-	controller := controller.NewController(service)
+	controller := controller.NewController(service.Task)
 
 	init := controller.Init()
 
