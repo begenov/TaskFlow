@@ -18,4 +18,5 @@ func NewTaskService(task storage.Task) Tasks {
 }
 
 func (t *tasksService) CreateTask(ctx context.Context, task models.Todo) error {
+	return nil
 }
