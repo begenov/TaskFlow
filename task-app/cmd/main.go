@@ -5,6 +5,7 @@ import (
 
 	"github.com/begenov/TaskFlow/pkg/postgresql"
 	"github.com/begenov/TaskFlow/task-app/internal/config"
+	"github.com/begenov/TaskFlow/task-app/internal/service"
 	"github.com/begenov/TaskFlow/task-app/internal/storage"
 )
 
@@ -22,4 +23,6 @@ func main() {
 	}
 
 	storage := storage.NewStorage(db)
+	service := service.NewService(*storage)
+
 }
