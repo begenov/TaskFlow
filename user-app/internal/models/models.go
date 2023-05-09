@@ -10,12 +10,6 @@ var Secret = []byte("secret")
 
 const Userkey = "user"
 
-type Todo struct {
-	ID          int    `json:"id"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-}
-
 type User struct {
 	ID        int       `json:"id"`
 	Username  string    `json:"username"`
@@ -23,12 +17,6 @@ type User struct {
 	CreatedAt time.Time `json:"created_at"`
 	Password  string    `json:"password" binding:"required"`
 	TokenStr  string
-}
-
-type Data struct {
-	Todos    []Todo
-	UserName string
-	Todo     Todo
 }
 
 type Claims struct {
