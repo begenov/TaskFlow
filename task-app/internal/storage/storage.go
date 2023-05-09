@@ -23,5 +23,5 @@ type Task interface {
 	AllTask(context.Context) ([]models.Todo, error)
 	TaskByID(context.Context, int) (models.Todo, error)
 	UpdateTask(context.Context, models.Todo) error
-	DeleteTask(context.Context, models.Todo) error
+	DeleteTask(context.Context, int) error
 }

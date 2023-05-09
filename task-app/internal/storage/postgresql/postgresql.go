@@ -31,6 +31,6 @@ func (t *Task) UpdateTask(ctx context.Context, task models.Todo) error {
 	return nil
 }
 
-func (t *Task) DeleteTask(ctx context.Context, task models.Todo) error {
+func (t *Task) DeleteTask(ctx context.Context, id int) error {
 	return nil
 }

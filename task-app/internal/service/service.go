@@ -1,8 +1,18 @@
 package service
 
-import "github.com/begenov/TaskFlow/task-app/internal/storage"
+import (
+	"context"
+
+	"github.com/begenov/TaskFlow/pkg/models"
+	"github.com/begenov/TaskFlow/task-app/internal/storage"
+)
 
 type Tasks interface {
+	CreateTask(ctx context.Context, task models.Todo) error
+	TaskByID(ctx context.Context, id int) (models.Todo, error)
+	AllTasks(ctx context.Context) ([]models.Todo, error)
+	UpdateTask(ctx context.Context, task models.Todo) error
+	DeleteTask(ctx context.Context, id int) error
 }
 
 type Service struct {

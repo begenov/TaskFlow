@@ -15,16 +15,17 @@ func NewController(task service.Tasks) *Controller {
 	}
 }
 
-func (c *Controller) Init(ctx *gin.Context) {
+func (c *Controller) Init() *gin.Engine {
 	router := gin.Default()
 
 	task := router.Group("/tasks")
 
 	{
-		task.POST("/create", c.createTask)
 		task.GET("", c.allTasks)
 		task.GET("/:id", c.taskByID)
+		task.POST("/create", c.createTask)
 		task.PUT("/update", c.updateTask)
 		task.DELETE("/delete", c.deleteTask)
 	}
+	return router
 }
