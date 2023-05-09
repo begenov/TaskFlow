@@ -1,12 +1,6 @@
 package controller
 
-import (
-	"net/http"
-	"strings"
-
-	"github.com/gin-gonic/gin"
-)
-
+/*
 const (
 	authorizationHeader = "Authorization"
 )
@@ -38,3 +32,4 @@ func (c *controller) userIdentity(ctx *gin.Context) {
 
 	ctx.Set("user_id", userID)
 }
+*/
