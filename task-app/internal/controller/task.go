@@ -86,6 +86,17 @@ func (c *Controller) taskByID(ctx *gin.Context) {
 }
 
 func (c *Controller) updateTask(ctx *gin.Context) {
+
+	taskID, err := strconv.Atoi(ctx.Param("taskID"))
+	if err != nil {
+		panic(err)
+	}
+
+	userID, err := strconv.Atoi(ctx.Param("userID"))
+	if err != nil {
+		panic(err)
+	}
+
 	var inputTask models.Todo
 
 	if err := ctx.BindJSON(&inputTask); err != nil {
