@@ -23,7 +23,7 @@ func (c *Controller) Init() *gin.Engine {
 	{
 		task.GET("", c.allTasks)
 		task.GET("/:id", c.taskByID)
-		task.POST("/create", c.createTask)
+		task.POST("/create/:userID", c.createTask)
 		task.PUT("/update", c.updateTask)
 		task.DELETE("/:id", c.deleteTask)
 	}

@@ -3,6 +3,7 @@ package postgresql
 import (
 	"context"
 	"database/sql"
+	"log"
 
 	"github.com/begenov/TaskFlow/pkg/models"
 )
@@ -16,7 +17,7 @@ func NewTask(db *sql.DB) *Task {
 }
 
 func (t *Task) CreateTask(ctx context.Context, task models.Todo) error {
-	stmt := `INSERT INTO "task" (title, description, user_id, create_at) VALUES ($1, $2, $3, $4)`
+	stmt := `INSERT INTO "task" (title, description, user_id, created_at) VALUES ($1, $2, $3, $4)`
 	if _, err := t.db.ExecContext(ctx, stmt, task.Title, task.Description, task.UserID, &task.CreatedAt); err != nil {
 		return err
 	}
@@ -29,6 +30,7 @@ func (t *Task) AllTask(ctx context.Context) ([]models.Todo, error) {
 	stmt := `SELECT * FROM "task"`
 	row, err := t.db.QueryContext(ctx, stmt)
 	if err != nil {
+		log.Fatalln(err)
 		return nil, err
 	}
 	for row.Next() {
@@ -53,7 +55,7 @@ func (t *Task) TaskByID(ctx context.Context, id int) (models.Todo, error) {
 }
 
 func (t *Task) UpdateTask(ctx context.Context, task models.Todo) error {
-	stmt := `UPDATE "task" SET title = $1, description = $2, create_at = $3	 WHERE id = $4;`
+	stmt := `UPDATE "task" SET title = $1, description = $2, created_at = $3	 WHERE id = $4;`
 	_, err := t.db.ExecContext(ctx, stmt, task.Title, task.Description, task.CreatedAt, task.ID)
 	if err != nil {
 		return err

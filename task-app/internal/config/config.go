@@ -24,7 +24,7 @@ func NewConfig() (*ConfigTask, error) {
 		return nil, err
 	}
 
-	dsn := os.Getenv("DSN")
+	dsn := os.Getenv("DSN_TASK")
 	driver := os.Getenv("DRIVER")
 
 	return &ConfigTask{

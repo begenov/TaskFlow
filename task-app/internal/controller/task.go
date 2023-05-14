@@ -3,6 +3,7 @@ package controller
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -21,6 +22,7 @@ func (c *Controller) createTask(ctx *gin.Context) {
 		return
 	}
 
+	// userID := 1
 	if err := ctx.BindJSON(&inputTask); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"ERROR": fmt.Errorf("%w", err),
@@ -32,13 +34,14 @@ func (c *Controller) createTask(ctx *gin.Context) {
 	inputTask.ID = userID
 
 	if err := c.services.CreateTask(context.Background(), inputTask); err != nil {
+		log.Println("errr", err)
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"ERROR": fmt.Errorf("%w", err),
 		})
 		return
 	}
 
-	ctx.JSON(http.StatusBadRequest, gin.H{
+	ctx.JSON(http.StatusOK, gin.H{
 		"successful": "successful: create task",
 	})
 
@@ -54,9 +57,9 @@ func (c *Controller) allTasks(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusBadRequest, gin.H{
-		"successful": tasks,
-	})
+	ctx.JSON(http.StatusBadRequest,
+		tasks,
+	)
 }
 
 func (c *Controller) taskByID(ctx *gin.Context) {

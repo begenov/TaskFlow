@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS "task" (
+CREATE TABLE  "task" (
     id SERIAL PRIMARY KEY,
     title TEXT,
     description TEXT,
