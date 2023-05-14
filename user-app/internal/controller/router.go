@@ -16,6 +16,7 @@ func (c *controller) Router() *gin.Engine {
 
 		task := user.Group("/tasks")
 		task.GET("", c.user.UserAllTasks)
+		task.POST("/create", c.userIdentity, c.user.UserCreateTask)
 	}
 
 	return mux

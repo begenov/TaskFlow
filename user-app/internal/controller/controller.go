@@ -12,6 +12,7 @@ type userProvider interface {
 	SignIn(ctx *gin.Context)
 	UserRefresh(ctx *gin.Context)
 	UserAllTasks(ctx *gin.Context)
+	UserCreateTask(ctx *gin.Context)
 }
 
 type Controller interface {

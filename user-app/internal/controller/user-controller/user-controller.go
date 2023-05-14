@@ -3,6 +3,7 @@ package usercontroller
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -70,8 +71,10 @@ func (u *UserController) SignIn(ctx *gin.Context) {
 
 	}
 
+	log.Println("-------------")
 	tokens, err := u.user.User(context.Background(), user.Email, user.Password)
 	if err != nil {
+
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"content": fmt.Sprint(err),
 		})
