@@ -47,6 +47,7 @@ func (c *Controller) createTask(ctx *gin.Context) {
 func (c *Controller) allTasks(ctx *gin.Context) {
 	tasks, err := c.services.AllTasks(context.Background())
 	if err != nil {
+		fmt.Println(err, "errrrrrrrrrrr")
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"ERROR": fmt.Errorf("%w", err),
 		})
