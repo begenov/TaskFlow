@@ -57,7 +57,7 @@ func (c *Controller) allTasks(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusBadRequest,
+	ctx.JSON(http.StatusOK,
 		tasks,
 	)
 }
