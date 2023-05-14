@@ -92,6 +92,12 @@ func (u *UserController) UserUpdateTask(ctx *gin.Context) {
 		return
 	}
 
-	http.Post("http://localhost:8000/tasks/"+strconv.Itoa(user_id)+strconv.Itoa(taskID), "application/json")
+	resp, err := http.Post("http://localhost:8000/tasks/update/"+strconv.Itoa(user_id)+"/"+strconv.Itoa(taskID), "application/json", bytes.NewBuffer(body))
+
+	if err != nil {
+		panic("error 98")
+	}
+
+	ctx.JSON(http.StatusOK, resp.Body)
 
 }

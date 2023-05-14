@@ -14,7 +14,6 @@ const (
 
 func (c *controller) userIdentity(ctx *gin.Context) {
 	header := ctx.GetHeader(authorizationHeader)
-	log.Println("===========", header)
 	if strings.TrimSpace(header) == "" {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"ERROR": "invalid auth header",
@@ -31,6 +30,7 @@ func (c *controller) userIdentity(ctx *gin.Context) {
 	userID, err := c.service.User.ParseToken(headerParts[1])
 
 	if err != nil {
+		log.Println("===========", err)
 
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 			"ERROR": err.Error(),
