@@ -15,6 +15,7 @@ type userProvider interface {
 	CreateUser(ctx context.Context, user models.User) error
 	User(ctx context.Context, email string, password string) (models.Tokens, error)
 	RefreshToken(ctx context.Context, refreshToken string) (models.Tokens, error)
+	UserByID(ctx context.Context, id int) (models.User, error)
 }
 
 type UserController struct {

@@ -76,7 +76,11 @@ func (u *UserController) UserUpdateTask(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "Failed to get user ID"})
 		return
 	}
-
+	user, err := u.user.UserByID(ctx, user_id)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
 	var inputTask models.Todo
 
 	if err := ctx.BindJSON(&inputTask); err != nil {
@@ -92,7 +96,7 @@ func (u *UserController) UserUpdateTask(ctx *gin.Context) {
 		return
 	}
 
-	resp, err := http.Post("http://localhost:8000/tasks/update/"+strconv.Itoa(user_id)+"/"+strconv.Itoa(taskID), "application/json", bytes.NewBuffer(body))
+	resp, err := http.Post("http://localhost:8000/tasks/update/"+user.Username+"/"+strconv.Itoa(taskID), "application/json", bytes.NewBuffer(body))
 
 	if err != nil {
 		panic("error 98")
