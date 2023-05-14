@@ -57,26 +57,30 @@ func (t *tasksService) AllTasks(ctx context.Context) ([]models.Todo, error) {
 	return tasks, nil
 }
 
-func (t *tasksService) UpdateTask(ctx context.Context, task models.Todo) error {
-	dbtask, err := t.task.TaskByID(ctx, task.ID)
+func (t *tasksService) UpdateTask(ctx context.Context, task models.Todo, taskID int, userName string) error {
+	dbtask, err := t.task.TaskByID(ctx, taskID)
 
 	if err != nil {
 		return err
 	}
+	fmt.Println(dbtask.Author == userName)
+	if dbtask.Author == userName {
 
-	if strings.TrimSpace(task.Title) == "" {
-		task.Title = dbtask.Title
+		if strings.TrimSpace(task.Title) == "" {
+			task.Title = dbtask.Title
+		}
+
+		if strings.TrimSpace(task.Description) == "" {
+			task.Description = dbtask.Description
+		}
+
+		if err = t.task.UpdateTask(ctx, task); err != nil {
+			return err
+		}
+		return nil
+	} else {
+		return fmt.Errorf("incorct error name")
 	}
-
-	if strings.TrimSpace(task.Description) == "" {
-		task.Description = dbtask.Description
-	}
-
-	if err = t.task.UpdateTask(ctx, task); err != nil {
-		return err
-	}
-
-	return nil
 }
 
 func (t *tasksService) DeleteTask(ctx context.Context, id int) error {

@@ -92,10 +92,7 @@ func (c *Controller) updateTask(ctx *gin.Context) {
 		panic(err)
 	}
 
-	userID, err := strconv.Atoi(ctx.Param("userID"))
-	if err != nil {
-		panic(err)
-	}
+	userName := ctx.Param("userID")
 
 	var inputTask models.Todo
 
@@ -106,7 +103,7 @@ func (c *Controller) updateTask(ctx *gin.Context) {
 		return
 	}
 
-	if err := c.services.UpdateTask(context.Background(), inputTask); err != nil {
+	if err := c.services.UpdateTask(context.Background(), inputTask, taskID, userName); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"ERROR": fmt.Errorf("%w", err),
 		})

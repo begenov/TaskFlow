@@ -11,7 +11,7 @@ type Tasks interface {
 	CreateTask(ctx context.Context, task models.Todo) error
 	TaskByID(ctx context.Context, id int) (models.Todo, error)
 	AllTasks(ctx context.Context) ([]models.Todo, error)
-	UpdateTask(ctx context.Context, task models.Todo) error
+	UpdateTask(ctx context.Context, task models.Todo, taskID int, userName string) error
 	DeleteTask(ctx context.Context, id int) error
 }
 
