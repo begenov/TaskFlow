@@ -64,3 +64,34 @@ func (u *UserController) UserCreateTask(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp.Body)
 
 }
+
+func (u *UserController) UserUpdateTask(ctx *gin.Context) {
+	taskID, err := strconv.Atoi(ctx.Param("taskID"))
+	if err != nil {
+		panic(err)
+	}
+
+	user_id, ok := ctx.Value("user_id").(int)
+	if !ok {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "Failed to get user ID"})
+		return
+	}
+
+	var inputTask models.Todo
+
+	if err := ctx.BindJSON(&inputTask); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{
+			"ERROR": fmt.Errorf("%w", err),
+		})
+		return
+	}
+
+	body, err := json.Marshal(inputTask)
+
+	if err != nil {
+		return
+	}
+
+	http.Post("http://localhost:8000/tasks/"+strconv.Itoa(user_id)+strconv.Itoa(taskID), "application/json")
+
+}
