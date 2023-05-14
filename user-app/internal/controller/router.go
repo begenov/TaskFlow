@@ -14,6 +14,8 @@ func (c *controller) Router() *gin.Engine {
 		user.POST("/sign-in", c.user.SignIn)
 		user.POST("/auth/refresh", c.user.UserRefresh)
 
+		task := user.Group("/tasks")
+		task.GET("", c.user.UserAllTasks)
 	}
 
 	return mux

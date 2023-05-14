@@ -11,6 +11,7 @@ type userProvider interface {
 	SignUpForm(ctx *gin.Context)
 	SignIn(ctx *gin.Context)
 	UserRefresh(ctx *gin.Context)
+	UserAllTasks(ctx *gin.Context)
 }
 
 type Controller interface {
