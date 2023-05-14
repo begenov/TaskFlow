@@ -15,13 +15,10 @@ import (
 func (c *Controller) createTask(ctx *gin.Context) {
 	var inputTask models.Todo
 
-	userID, ok := ctx.Value("user_id").(int)
-
-	if !ok {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Failed to get user ID"})
-		return
+	userID, err := strconv.Atoi(ctx.Param("userID"))
+	if err != nil {
+		panic(err)
 	}
-
 	// userID := 1
 	if err := ctx.BindJSON(&inputTask); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
