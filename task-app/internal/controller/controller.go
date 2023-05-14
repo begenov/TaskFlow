@@ -24,8 +24,8 @@ func (c *Controller) Init() *gin.Engine {
 		task.GET("", c.allTasks)
 		task.GET("/:id", c.taskByID)
 		task.POST("/create/:userID", c.createTask)
-		task.PUT("/update", c.updateTask)
-		task.DELETE("/:id", c.deleteTask)
+		task.PUT("/update/:userID/:taskID", c.updateTask)
+		task.DELETE("/:taskID/:userID", c.deleteTask)
 	}
 
 	return router
