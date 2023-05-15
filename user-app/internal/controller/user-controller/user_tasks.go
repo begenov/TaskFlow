@@ -91,6 +91,8 @@ func (u *UserController) UserUpdateTask(ctx *gin.Context) {
 		return
 	}
 
+	fmt.Println(inputTask)
+
 	body, err := json.Marshal(inputTask)
 
 	if err != nil {
