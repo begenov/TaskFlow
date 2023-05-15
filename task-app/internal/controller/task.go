@@ -106,6 +106,8 @@ func (c *Controller) updateTask(ctx *gin.Context) {
 		return
 	}
 
+	log.Println(inputTask, "taskkkkkkkkk")
+
 	if err := c.services.UpdateTask(context.Background(), inputTask, taskID, userId); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"ERROR": fmt.Errorf("%w", err),
@@ -113,7 +115,7 @@ func (c *Controller) updateTask(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusBadRequest, gin.H{
+	ctx.JSON(http.StatusOK, gin.H{
 		"successful": "successful",
 	})
 

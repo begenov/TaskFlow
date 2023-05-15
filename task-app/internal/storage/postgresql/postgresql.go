@@ -56,7 +56,7 @@ func (t *Task) TaskByID(ctx context.Context, id int) (models.Todo, error) {
 }
 
 func (t *Task) UpdateTask(ctx context.Context, task models.Todo) error {
-	stmt := `UPDATE "task" SET title = $1, description = $2, created_at = $3	 WHERE id = $4;`
+	stmt := `UPDATE "task" SET title = $1, description = $2, created_at = $3 WHERE id = $4`
 	_, err := t.db.ExecContext(ctx, stmt, task.Title, task.Description, task.CreatedAt, task.ID)
 	if err != nil {
 		return err

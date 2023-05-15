@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"time"
 
 	"github.com/begenov/TaskFlow/pkg/models"
 	"github.com/begenov/TaskFlow/task-app/internal/storage"
@@ -65,7 +66,6 @@ func (t *tasksService) UpdateTask(ctx context.Context, task models.Todo, taskID 
 	if err != nil {
 		return err
 	}
-	fmt.Println(dbtask.UserID == userID)
 	if dbtask.UserID == userID {
 
 		if strings.TrimSpace(task.Title) == "" {
@@ -75,10 +75,13 @@ func (t *tasksService) UpdateTask(ctx context.Context, task models.Todo, taskID 
 		if strings.TrimSpace(task.Description) == "" {
 			task.Description = dbtask.Description
 		}
-
+		task.CreatedAt = time.Now()
+		task.ID = taskID
+		log.Println("services", task)
 		if err = t.task.UpdateTask(ctx, task); err != nil {
 			return err
 		}
+
 		return nil
 	} else {
 		return fmt.Errorf("incorct error name")
