@@ -88,10 +88,22 @@ func (t *tasksService) UpdateTask(ctx context.Context, task models.Todo, taskID 
 	}
 }
 
-func (t *tasksService) DeleteTask(ctx context.Context, id int) error {
-	if err := t.task.DeleteTask(ctx, id); err != nil {
+func (t *tasksService) DeleteTask(ctx context.Context, taskID int, userID int) error {
+
+	dbtask, err := t.task.TaskByID(ctx, taskID)
+
+	if err != nil {
 		return err
 	}
+	if dbtask.UserID == userID {
+
+		if err := t.task.DeleteTask(ctx, taskID); err != nil {
+			return err
+		}
+	} else {
+		return fmt.Errorf("incorct error name")
+	}
+
 	return nil
 }
 

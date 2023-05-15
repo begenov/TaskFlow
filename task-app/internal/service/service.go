@@ -12,7 +12,7 @@ type Tasks interface {
 	TaskByID(ctx context.Context, id int) (models.Todo, error)
 	AllTasks(ctx context.Context) ([]models.Todo, error)
 	UpdateTask(ctx context.Context, task models.Todo, taskID int, userID int) error
-	DeleteTask(ctx context.Context, id int) error
+	DeleteTask(ctx context.Context, taskID int, userID int) error
 }
 
 type Service struct {

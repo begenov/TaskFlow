@@ -123,23 +123,24 @@ func (c *Controller) updateTask(ctx *gin.Context) {
 
 func (c *Controller) deleteTask(ctx *gin.Context) {
 
-	taskID := ctx.Param("id")
-	id, err := strconv.Atoi(taskID)
+	taskID, err := strconv.Atoi(ctx.Param("taskID"))
 	if err != nil {
+		panic(err)
+	}
+
+	userId, err := strconv.Atoi(ctx.Param("userID"))
+	if err != nil {
+		panic(err)
+	}
+
+	if err := c.services.DeleteTask(context.Background(), taskID, userId); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"ERROR": fmt.Errorf("%w", err),
 		})
 		return
 	}
 
-	if err := c.services.DeleteTask(context.Background(), id); err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"ERROR": fmt.Errorf("%w", err),
-		})
-		return
-	}
-
-	ctx.JSON(http.StatusBadRequest, gin.H{
+	ctx.JSON(http.StatusOK, gin.H{
 		"successful": "successful",
 	})
 }
