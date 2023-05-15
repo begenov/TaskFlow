@@ -10,7 +10,8 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/begenov/TaskFlow/pkg/models"
+	model "github.com/begenov/TaskFlow/pkg/models"
+	"github.com/begenov/TaskFlow/user-app/internal/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -24,7 +25,7 @@ func (u *UserController) UserAllTasks(ctx *gin.Context) {
 	if err != nil {
 		return
 	}
-	var task []models.Todo
+	var task []model.Todo
 
 	if err := json.Unmarshal(body, &task); err != nil {
 		log.Fatal(string(body), err)
@@ -41,7 +42,7 @@ func (u *UserController) UserCreateTask(ctx *gin.Context) {
 		return
 	}
 
-	var inputTask models.Todo
+	var inputTask model.Todo
 
 	if err := ctx.BindJSON(&inputTask); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -77,11 +78,11 @@ func (u *UserController) UserUpdateTask(ctx *gin.Context) {
 		return
 	}
 	user, err := u.user.UserByID(ctx, user_id)
-	if err != nil {
+	if err != nil && user != (models.User{}) {
 		log.Fatal(err)
 		return
 	}
-	var inputTask models.Todo
+	var inputTask model.Todo
 
 	if err := ctx.BindJSON(&inputTask); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -96,7 +97,7 @@ func (u *UserController) UserUpdateTask(ctx *gin.Context) {
 		return
 	}
 
-	resp, err := http.Post("http://localhost:8000/tasks/update/"+user.Username+"/"+strconv.Itoa(taskID), "application/json", bytes.NewBuffer(body))
+	resp, err := http.Post("http://localhost:8000/tasks/update/"+strconv.Itoa(user_id)+"/"+strconv.Itoa(taskID), "application/json", bytes.NewBuffer(body))
 
 	if err != nil {
 		panic("error 98")
