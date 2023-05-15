@@ -14,6 +14,7 @@ type userProvider interface {
 	UserAllTasks(ctx *gin.Context)
 	UserCreateTask(ctx *gin.Context)
 	UserUpdateTask(ctx *gin.Context)
+	UserDeleteTask(ctx *gin.Context)
 }
 
 type Controller interface {

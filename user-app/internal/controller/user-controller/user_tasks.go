@@ -108,3 +108,33 @@ func (u *UserController) UserUpdateTask(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, resp.Body)
 
 }
+
+func (u *UserController) UserDeleteTask(ctx *gin.Context) {
+	taskID, err := strconv.Atoi(ctx.Param("taskID"))
+	if err != nil {
+		panic(err)
+	}
+
+	user_id, ok := ctx.Value("user_id").(int)
+	if !ok {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"message": "Failed to get user ID"})
+		return
+	}
+
+	url := "http://localhost:8000/tasks/" + strconv.Itoa(taskID) + "/" + strconv.Itoa(user_id)
+
+	req, err := http.NewRequest("DELETE", url, nil)
+	if err != nil {
+		return
+	}
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"true": resp.Body,
+	})
+}
