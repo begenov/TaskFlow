@@ -16,6 +16,7 @@ func (c *Controller) createTask(ctx *gin.Context) {
 	var inputTask models.Todo
 
 	userID, err := strconv.Atoi(ctx.Param("userID"))
+	log.Println(userID)
 	if err != nil {
 		panic(err)
 	}
@@ -28,8 +29,7 @@ func (c *Controller) createTask(ctx *gin.Context) {
 	}
 
 	inputTask.CreatedAt = time.Now()
-	inputTask.ID = userID
-
+	inputTask.UserID = userID
 	if err := c.services.CreateTask(context.Background(), inputTask); err != nil {
 		log.Println("errr", err)
 		ctx.JSON(http.StatusBadRequest, gin.H{
@@ -92,7 +92,10 @@ func (c *Controller) updateTask(ctx *gin.Context) {
 		panic(err)
 	}
 
-	userName := ctx.Param("userID")
+	userId, err := strconv.Atoi(ctx.Param("userID"))
+	if err != nil {
+		panic(err)
+	}
 
 	var inputTask models.Todo
 
@@ -103,7 +106,7 @@ func (c *Controller) updateTask(ctx *gin.Context) {
 		return
 	}
 
-	if err := c.services.UpdateTask(context.Background(), inputTask, taskID, userName); err != nil {
+	if err := c.services.UpdateTask(context.Background(), inputTask, taskID, userId); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{
 			"ERROR": fmt.Errorf("%w", err),
 		})

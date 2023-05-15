@@ -18,6 +18,7 @@ func NewTask(db *sql.DB) *Task {
 
 func (t *Task) CreateTask(ctx context.Context, task models.Todo) error {
 	stmt := `INSERT INTO "task" (title, description, user_id, created_at) VALUES ($1, $2, $3, $4)`
+	log.Println(task.UserID)
 	if _, err := t.db.ExecContext(ctx, stmt, task.Title, task.Description, task.UserID, &task.CreatedAt); err != nil {
 		return err
 	}
